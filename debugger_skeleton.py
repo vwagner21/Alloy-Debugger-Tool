@@ -1,4 +1,5 @@
 import sys, re
+import time, subprocess
 
 def create_file(filepath, x):
     """
@@ -18,7 +19,7 @@ def create_file(filepath, x):
 
     """
 
-    new_filepath = "/Users/viniciuswagner/Desktop/IW Spring 2020/Alloy Debugger Tool/output/factToPred_"+str(x) # name this something based on the number x
+    new_filepath = "/Users/viniciuswagner/Desktop/IW Spring 2020/Alloy Debugger Tool/Alloy-Debugger-Tool/output/factToPred_"+str(x) # name this something based on the number x
 
     # create a new file with only one fact
     new = open(new_filepath, 'w')
@@ -32,7 +33,7 @@ def create_file(filepath, x):
             if "fact" in line:
                 counter += 1
                 # print(f"FOUND FACT NUMBER {counter}")
-                if counter == x:
+                if counter != x:
                     new.write(line.replace("fact","pred"))
                     line = file_object.readline()
                     continue
@@ -58,28 +59,27 @@ if __name__ == '__main__':
         allFacts = re.findall('fact', file_object.read())
         # print(allFacts)
         n = len(allFacts)
-        print(f"Number of facts: {n}")
+        # print(f"Number of facts: {n}")
         new_filepath = create_file(filepath, n)
-
         # create a file for each instance
         for x in range(n):
             new_filepath = create_file(filepath, x)
-            # # run each file as it is created
-            # test_time_start = time.time()
-            # p = subprocess.Popen(["java", "-cp", "../org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
-            #                      "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
-            #                      "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
-            # out, _  = p.communicate()
-            # test_time_elapsed = time.time() - test_time_start
-            #
-            # # record results in output file
-            # fout.write(test + ": ")
-            # if "---INSTANCE---" in out:
-            #   fout.write(tests[test] + ", Observable, ")
-            #
-            # else:
-            #   fout.write(tests[test] + ", Unobservable, ")
-            #
-            # fout.write(str(test_time_elapsed) + " sec\n")
+            # run each file as it is created
+            test_time_start = time.time()
+            p = subprocess.Popen(["java", "-cp", "../org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
+                                 "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
+                                 "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
+            out, _  = p.communicate()
+            test_time_elapsed = time.time() - test_time_start
 
-    # fout.close()
+            # record results in output file
+            fout.write(test + ": ")
+            if "---INSTANCE---" in out:
+              fout.write(tests[test] + ", Observable, ")
+
+            else:
+              fout.write(tests[test] + ", Unobservable, ")
+
+            fout.write(str(test_time_elapsed) + " sec\n")
+
+    fout.close()
