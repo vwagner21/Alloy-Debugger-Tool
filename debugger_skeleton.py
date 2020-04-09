@@ -1,5 +1,6 @@
 import sys, re
-import time, subprocess
+import time
+import shlex, subprocess
 
 def create_file(filepath, x):
     """
@@ -19,14 +20,14 @@ def create_file(filepath, x):
 
     """
 
-    new_filepath = "/Users/viniciuswagner/Desktop/IW Spring 2020/Alloy Debugger Tool/Alloy-Debugger-Tool/output/factToPred_"+str(x) # name this something based on the number x
+    new_filepath = "factToPred_"+str(x) # name this something based on the number x
 
     # create a new file with only one fact
     new = open(new_filepath, 'w')
 
     # open the file and read through it line by line
     with open(filepath, 'r') as file_object:
-        counter = 0
+        counter = 1
         line = file_object.readline()
         while line:
             # print("Current line: "+line)
@@ -48,10 +49,10 @@ if __name__ == '__main__':
         exit()
     # get filepath to open original uspec .als file
     filepath = sys.argv[1]
-
-
+    test = "test_sb" # FiveStages test instance, just using as placeholder.
+    tests = {}
     # create output file to record results
-    # fout = open("out.txt", 'w') # TODO: this should be a path to an output file -- can be anything
+    fout = open("out.txt", 'w') # TODO: this should be a path to an output file -- can be anything
 
     # open the file
     with open(filepath, 'r') as file_object:
@@ -59,16 +60,15 @@ if __name__ == '__main__':
         allFacts = re.findall('fact', file_object.read())
         # print(allFacts)
         n = len(allFacts)
-        # print(f"Number of facts: {n}")
-        new_filepath = create_file(filepath, n)
+        # print(f"Number of facts: {n}")a
         # create a file for each instance
         for x in range(n):
             new_filepath = create_file(filepath, x)
-            # run each file as it is created
+             # run each file as it is created
             test_time_start = time.time()
-            p = subprocess.Popen(["java", "-cp", "../org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
-                                 "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
-                                 "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
+            p = subprocess.Popen(["java", "-cp", "org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
+                                  "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
+                                  "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
             out, _  = p.communicate()
             test_time_elapsed = time.time() - test_time_start
 
