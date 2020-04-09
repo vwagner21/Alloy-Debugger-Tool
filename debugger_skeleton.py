@@ -27,17 +27,30 @@ def create_file(filepath, x):
 
     # open the file and read through it line by line
     with open(filepath, 'r') as file_object:
-        counter = 1
+        counter = 0
         line = file_object.readline()
         while line:
             # print("Current line: "+line)
             if "fact" in line:
                 counter += 1
+                currentLine = line.split()
+                unnamedFact = True
+                factInd = currentLine.index('fact')
+
+                if currentLine[factInd+1] != '{':
+                    unnamedFact == False
+
                 # print(f"FOUND FACT NUMBER {counter}")
                 if counter != x:
-                    new.write(line.replace("fact","pred"))
+                    # Replace module
+                    if unnamedFact:
+                        replaceStr = "pred " + str(counter)
+                        new.write(line.replace("fact",replaceStr))
+                    else:
+                        new.write(line.replace("fact","pred"))
                     line = file_object.readline()
                     continue
+                    
             # copy every line to new file
             new.write(line)
             line = file_object.readline()
@@ -61,7 +74,7 @@ if __name__ == '__main__':
         n = len(allFacts)
 
         # create a file for each instance
-        for x in range(n):
+        for x in range(n+1):
             new_filepath = create_file(filepath, x)
              # run each file as it is created
             test_time_start = time.time()
