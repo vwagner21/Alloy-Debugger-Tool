@@ -38,19 +38,22 @@ def create_file(filepath, x):
                 factInd = currentLine.index('fact')
 
                 if currentLine[factInd+1] != '{':
-                    unnamedFact == False
+                    unnamedFact = False
+
+                print(currentLine[factInd+1])
+                print(unnamedFact)
 
                 # print(f"FOUND FACT NUMBER {counter}")
                 if counter != x:
                     # Replace module
                     if unnamedFact:
-                        replaceStr = "pred " + str(counter)
+                        replaceStr = "pred PRED" + str(counter)
                         new.write(line.replace("fact",replaceStr))
                     else:
                         new.write(line.replace("fact","pred"))
                     line = file_object.readline()
                     continue
-                    
+
             # copy every line to new file
             new.write(line)
             line = file_object.readline()
