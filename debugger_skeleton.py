@@ -50,7 +50,7 @@ if __name__ == '__main__':
     # get filepath to open original uspec .als file
     filepath = sys.argv[1]
     test = "test_sb" # FiveStages test instance, just using as placeholder.
-    tests = {}
+    # tests = {}
     # create output file to record results
     fout = open("out.txt", 'w') # TODO: this should be a path to an output file -- can be anything
 
@@ -58,9 +58,8 @@ if __name__ == '__main__':
     with open(filepath, 'r') as file_object:
         # count number of instances of "fact"
         allFacts = re.findall('fact', file_object.read())
-        # print(allFacts)
         n = len(allFacts)
-        # print(f"Number of facts: {n}")a
+
         # create a file for each instance
         for x in range(n):
             new_filepath = create_file(filepath, x)
@@ -75,10 +74,10 @@ if __name__ == '__main__':
             # record results in output file
             fout.write(test + ": ")
             if "---INSTANCE---" in out:
-              fout.write(tests[test] + ", Observable, ")
+              fout.write(test + ", Observable, ")
 
             else:
-              fout.write(tests[test] + ", Unobservable, ")
+              fout.write(test + ", Unobservable, ")
 
             fout.write(str(test_time_elapsed) + " sec\n")
 
