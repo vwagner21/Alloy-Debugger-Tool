@@ -20,7 +20,7 @@ def create_file(filepath, x):
 
     """
 
-    new_filepath = "factToPred_"+str(x) # name this something based on the number x
+    new_filepath = "factToPred_"+str(x)+".als" # name this something based on the number x
 
     # create a new file with only one fact
     new = open(new_filepath, 'w')
