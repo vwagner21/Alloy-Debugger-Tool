@@ -39,9 +39,9 @@ def create_file(filepath, x):
 
                 if currentLine[factInd+1] != '{':
                     unnamedFact = False
-
-                print(currentLine[factInd+1])
-                print(unnamedFact)
+                # 
+                # print(currentLine[factInd+1])
+                # print(unnamedFact)
 
                 # print(f"FOUND FACT NUMBER {counter}")
                 if counter != x:
