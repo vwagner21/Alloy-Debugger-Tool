@@ -15,13 +15,13 @@ one sig StoreBuffer extends Location { }
 one sig MemoryHierarchy extends Location { }
 
 // uhb_intra is limitted to reads path and writes path
-fact 	{ all f : Fence	| all disj l, l' : Location | l->l' in f_path <=> EdgeExists[f, l, f, l', uhb_intra] }
-fact 	{ all r : Read 	| all disj l, l' : Location | l->l' in r_path <=> EdgeExists[r, l, r, l', uhb_intra] }
-fact 	{ all w : Write	| all disj l, l' : Location | l->l' in w_path <=> EdgeExists[w, l, w, l', uhb_intra] }
+pred 	{ all f : Fence	| all disj l, l' : Location | l->l' in f_path <=> EdgeExists[f, l, f, l', uhb_intra] }
+pred 	{ all r : Read 	| all disj l, l' : Location | l->l' in r_path <=> EdgeExists[r, l, r, l', uhb_intra] }
+pred 	{ all w : Write	| all disj l, l' : Location | l->l' in w_path <=> EdgeExists[w, l, w, l', uhb_intra] }
 
 // create minimal nodes
 // all nodes that *must exist* 
-fact {
+pred {
 	Fence->{ FetchStage + DecodeStage + ExecuteStage + MemoryStage + WritebackStage } +	
 	Read->{ FetchStage + DecodeStage + ExecuteStage + MemoryStage + WritebackStage } +	
 	Write->{ FetchStage + DecodeStage + ExecuteStage + MemoryStage + WritebackStage + StoreBuffer + MemoryHierarchy }  in NodeRel
@@ -29,7 +29,7 @@ fact {
 
 // bound nodes so Alloy doesn't create more
 // all nodes that *could exist*
-fact { NodeRel in 
+pred { NodeRel in 
 	Fence->{ FetchStage + DecodeStage + ExecuteStage + MemoryStage + WritebackStage } +
 	Read->{ FetchStage + DecodeStage + ExecuteStage + MemoryStage + WritebackStage } +																	
 	Write->{ FetchStage + DecodeStage + ExecuteStage + MemoryStage + WritebackStage + StoreBuffer + MemoryHierarchy } 
@@ -62,43 +62,43 @@ fun w_path : Location->Location {
 } 	
 
 // uhb_inter: inter-instruction happens-beofre
-fact Fetch_stage_is_inorder { all disj e, e' : Event 	|
+pred Fetch_stage_is_inorder { all disj e, e' : Event 	|
 	ProgramOrder[e, e'] <=>
 	EdgeExists[e, FetchStage, e', FetchStage, uhb_inter]
 }
 
-fact Decode_stage_is_inorder { all disj e, e' : Event |
+pred Decode_stage_is_inorder { all disj e, e' : Event |
 	EdgeExists[e, FetchStage, e', FetchStage, uhb_inter] <=>
 	EdgeExists[e, DecodeStage, e', DecodeStage, uhb_inter]
 }
 
-fact Execute_stage_is_inorder { all disj e, e' : Event |
+pred Execute_stage_is_inorder { all disj e, e' : Event |
 	EdgeExists[e, DecodeStage, e', DecodeStage, uhb_inter] <=>
  	EdgeExists[e, ExecuteStage, e', ExecuteStage, uhb_inter]
 }
 
-fact Memory_stage_is_inorder { all disj e, e' : Event	|
+pred Memory_stage_is_inorder { all disj e, e' : Event	|
 	EdgeExists[e, ExecuteStage, e', ExecuteStage, uhb_inter] <=>
 	EdgeExists[e, MemoryStage, e', MemoryStage, uhb_inter]
 }
 
-fact Writeback_stage_is_inorder { all disj e, e' : Event |
+pred Writeback_stage_is_inorder { all disj e, e' : Event |
 	EdgeExists[e, MemoryStage, e', MemoryStage, uhb_inter ]	<=>
 	EdgeExists[e, WritebackStage, e', WritebackStage, uhb_inter]
 }
 
-fact STB_FIFO { all disj w, w' : Write 	|
+pred STB_FIFO { all disj w, w' : Write 	|
 	EdgeExists[w, WritebackStage, w', WritebackStage, uhb_inter] <=>
 	EdgeExists[w, StoreBuffer, w', StoreBuffer, uhb_inter]
 }
 
-fact STB_OneAtATime { all disj w, w' : Write |
+pred STB_OneAtATime { all disj w, w' : Write |
 	EdgeExists[w, StoreBuffer, w', StoreBuffer, uhb_inter] <=>
 	EdgeExists[w, MemoryHierarchy, w', StoreBuffer, uhb_inter]
 }
 
 // limit uhb_inter to edges that make sense to constrain Alloy
-pred { uhb_inter in 
+fact { uhb_inter in 
 	Event->FetchStage->Event->FetchStage + 
 	Event->DecodeStage->Event->DecodeStage + 
 	Event->ExecuteStage->Event->ExecuteStage +
@@ -140,14 +140,14 @@ pred Coherence[w: Write, w': Write] {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // =Axioms=
-fact mfence_order { 
+pred mfence_order { 
 	all f: Fence | all w : Write |
 	SameCore[w, f] and 
 	ProgramOrder[w, f] <=>
     EdgeExists[w, MemoryHierarchy, f, ExecuteStage, ufence]
 }
 
-fact ReadsFrom {
+pred ReadsFrom {
 	 all r : Read | all w : Write | w->r in rf  =>
     (
 	   	STBFwd[w, r] or	
@@ -157,7 +157,7 @@ fact ReadsFrom {
 	)
 }
 
-fact CoherenceOrder {
+pred CoherenceOrder {
     all w : Write | all w' : Write| w->w' in co =>	// TODO: double arrow should be fine, but check
     (
         Coherence[w, w']
@@ -165,7 +165,7 @@ fact CoherenceOrder {
   
 }
 
-fact FromReads {
+pred FromReads {
  	all r : Read | all w : Write | r->w in fr =>
     (
 		(SameCore[r, w] and EdgeExists[r, MemoryStage, w, ExecuteStage, ufr]) or
@@ -175,44 +175,44 @@ fact FromReads {
 }
 
 // extra constraints to bound edges
-fact { urf in 
+pred { urf in 
 	Write->MemoryStage->Read->MemoryStage +
 	Write->MemoryHierarchy->Read->MemoryStage
 }
 
-fact { uco in
+pred { uco in
 	Write->MemoryHierarchy->Write->MemoryHierarchy
 }
 
-fact { ufr in
+pred { ufr in
 	Read->MemoryStage->Write->MemoryHierarchy +
     Read->MemoryStage->Write->ExecuteStage 
 }
 
-fact { ustb in
+pred { ustb in
 	Read->MemoryStage->Write->MemoryHierarchy 
 }
 
-fact { ufence in
+pred { ufence in
 	Write->MemoryHierarchy->Fence->ExecuteStage
 }
 
-fact { 
+pred { 
 	all w : Write | all r : Read | 	all l, l' : Location |
 	EdgeExists[w, l, r, l', urf] => w->r in rf
 }
 
-fact {
+pred {
 	all disj w, w' : Write | all l, l' : Location | 
 	EdgeExists[w, l, w', l', uco] => w->w' in co
 }
 
-fact {
+pred {
 	all r : Read | all w : Write | all l, l' : Location |
 	EdgeExists[r, l, w, l', ufr] => r->w in fr
 }
 
-fact {
+pred {
         all r : Read, w : Write | all l, l' : Location |
         EdgeExists[r, l, w, l', ustb] => w->r in rf and STBFwd[w, r]
 }
