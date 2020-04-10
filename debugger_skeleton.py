@@ -1,6 +1,8 @@
 import sys, re
 import time
 import shlex, subprocess
+import argparse
+
 
 def create_file(filepath, x):
     """
@@ -60,15 +62,48 @@ def create_file(filepath, x):
     return new_filepath
 
 if __name__ == '__main__':
-    if sys.argv[1] is None:
-        print("Usage: /path/to/als/file")
-        exit()
+    parser = argparse.ArgumentParser(description='Alloy Debugging Program')
+
+    parser.add_argument('-i',
+                        metavar='InFile',
+                        type=str,
+                        help='The input alloy file',
+                        required=True)
+
+    parser.add_argument('-t',
+                        metavar='testAlloy',
+                        type=str,
+                        help='The alloy test instance name',
+                        required=True)
+
+    parser.add_argument('-o',
+                        metavar='OutFile',
+                        type=str,
+                        help='Where to output the  file',
+                        required=True)
+
+    # parser.add_argument('-a', action='store_true', help='Enable graph output')
+    parser.add_argument('-g', action='store_true', help='Enable graph output')
+
+    args = parser.parse_args()
+
+    banner = "################################\n"
+    banner+= "#           BEGINNING          #\n"
+    banner+= "#        DEBUGGER Program      #\n"
+    banner+= "################################\n"
+
+    print(banner)
+    if args.t == None or args.o == None or args.i == None:
+        print("Missing args")
+    else:
+        if args.g:
+            # Handle graphs
+
+
     # get filepath to open original uspec .als file
-    filepath = sys.argv[1]
-    test = "test_sb" # FiveStages test instance, just using as placeholder.
-    # tests = {}
-    # create output file to record results
-    fout = open("out.txt", 'w') # TODO: this should be a path to an output file -- can be anything
+    filepath = args.i
+    test = args.t # FiveStages test instance, just using as placeholder.
+    fout = open(args.o, 'w') # TODO: this should be a path to an output file -- can be anything
 
     # open the file
     with open(filepath, 'r') as file_object:

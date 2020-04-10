@@ -70,6 +70,8 @@ if __name__ == '__main__':
     if sys.argv[1] is None:
         print("Usage: /path/to/als/file")
         exit()
+
+
     # get filepath to open original uspec .als file
     filepath = sys.argv[1]
     randomize_Word(filepath, "or", "and")
