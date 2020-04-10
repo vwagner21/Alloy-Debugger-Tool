@@ -95,9 +95,9 @@ if __name__ == '__main__':
     print(banner)
     if args.t == None or args.o == None or args.i == None:
         print("Missing args")
-    else:
-        if args.g:
-            # Handle graphs
+    # else:
+    #     if args.g:
+    #         # Handle graphs
 
 
     # get filepath to open original uspec .als file
