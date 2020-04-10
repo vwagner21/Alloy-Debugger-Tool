@@ -39,7 +39,7 @@ def create_file(filepath, x):
 
                 if currentLine[factInd+1] != '{':
                     unnamedFact = False
-                # 
+                #
                 # print(currentLine[factInd+1])
                 # print(unnamedFact)
 
@@ -85,6 +85,7 @@ if __name__ == '__main__':
                                   "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
                                   "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
             out, _  = p.communicate()
+            print(out)
             test_time_elapsed = time.time() - test_time_start
 
             # record results in output file
