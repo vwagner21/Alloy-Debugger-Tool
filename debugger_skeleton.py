@@ -91,8 +91,8 @@ if __name__ == '__main__':
     banner+= "#           BEGINNING          #\n"
     banner+= "#        DEBUGGER Program      #\n"
     banner+= "################################\n"
-
     print(banner)
+    
     if args.t == None or args.o == None or args.i == None:
         print("Missing args")
 
