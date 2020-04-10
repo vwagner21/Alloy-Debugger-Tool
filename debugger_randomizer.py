@@ -29,7 +29,7 @@ def randomize_Word(filepath, word, replace):
                 numWord += 1
             line = file_object.readline()
         if numWord == 0:
-            print(f"Given file does not contain: {word}")
+            print("Given file does not contain: "+word)
             return
 
         randLine = np.random.randint(1, numWord+1)
