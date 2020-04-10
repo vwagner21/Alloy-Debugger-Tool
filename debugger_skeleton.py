@@ -121,6 +121,15 @@ if __name__ == '__main__':
                 filename = "graph_"+str(x)+".xml"
                 fgraph = open(filename, 'w')
                 fgraph.write(out)
+                counter = 0
+                with open(filename, "r") as f:
+                    lines = f.readlines()
+                    with open(filename, "w") as f:
+                        for line in lines:
+                            if counter < 4:
+                                continue
+                            f.write(line)
+
 
             test_time_elapsed = time.time() - test_time_start
 
