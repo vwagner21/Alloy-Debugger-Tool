@@ -127,6 +127,7 @@ if __name__ == '__main__':
                     with open(filename, "w") as f:
                         for line in lines:
                             if counter < 4:
+                                counter += 1
                                 continue
                             f.write(line)
 
