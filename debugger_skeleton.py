@@ -95,10 +95,6 @@ if __name__ == '__main__':
     print(banner)
     if args.t == None or args.o == None or args.i == None:
         print("Missing args")
-    # else:
-    #     if args.g:
-    #         # Handle graphs
-
 
     # get filepath to open original uspec .als file
     filepath = args.i
@@ -120,7 +116,12 @@ if __name__ == '__main__':
                                   "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
                                   "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
             out, _  = p.communicate()
-            print(out)
+            if args.g:
+                # Create graph for current file
+                filename = "graph_"+str(x)+".xml"
+                fgraph = open(filename, 'w')
+                fgraph.write(out)
+
             test_time_elapsed = time.time() - test_time_start
 
             # record results in output file
