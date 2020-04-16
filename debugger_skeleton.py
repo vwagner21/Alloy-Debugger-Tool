@@ -123,14 +123,14 @@ if __name__ == '__main__':
                 fgraph = open(filename, 'w')
                 fgraph.write(out)
                 counter = 0
-                with open(filename, "r") as f:
-                    lines = f.readlines()
-                    with open(filename, "w") as f:
-                        for line in lines:
-                            if counter < 4: # number of lines until INSTANCE starts
-                                counter += 1
-                                continue
-                            f.write(line)
+                # with open(filename, "r") as f:
+                #     lines = f.readlines()
+                #     with open(filename, "w") as f:
+                #         for line in lines:
+                #             if counter < 4: # number of lines until INSTANCE starts
+                #                 counter += 1
+                #                 continue
+                #             f.write(line)
 
 
             test_time_elapsed = time.time() - test_time_start
