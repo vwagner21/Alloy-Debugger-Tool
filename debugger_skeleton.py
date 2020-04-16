@@ -119,7 +119,7 @@ if __name__ == '__main__':
 
             if args.g:
                 # Create graph for current file
-                filename = "graph_"+str(x)+".xml"
+                filename = "graph_"+str(x)
                 fgraph = open(filename, 'w')
                 fgraph.write(out)
                 counter = 0
