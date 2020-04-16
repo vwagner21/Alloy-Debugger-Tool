@@ -218,7 +218,7 @@ public final class MainClass {
                                 // Print the outcome
                                 System.out.println(ans);
                                 System.out.println("---END INSTANCE---\n");
-                                //ans = ans.next(); // comment this out for Lingeling (non-incremental)
+                                ans = ans.next(); // comment this out for Lingeling (non-incremental)
                                 if (num_instances == 0) {
                                   tEnd_one = System.currentTimeMillis();
                                 }

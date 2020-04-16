@@ -92,7 +92,7 @@ if __name__ == '__main__':
     banner+= "#        DEBUGGER Program      #\n"
     banner+= "################################\n"
     print(banner)
-    
+
     if args.t == None or args.o == None or args.i == None:
         print("Missing args")
 
@@ -116,6 +116,7 @@ if __name__ == '__main__':
                                   "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
                                   "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
             out, _  = p.communicate()
+
             if args.g:
                 # Create graph for current file
                 filename = "graph_"+str(x)+".xml"
@@ -126,7 +127,7 @@ if __name__ == '__main__':
                     lines = f.readlines()
                     with open(filename, "w") as f:
                         for line in lines:
-                            if counter < 4:
+                            if counter < 4: # number of lines until INSTANCE starts
                                 counter += 1
                                 continue
                             f.write(line)
