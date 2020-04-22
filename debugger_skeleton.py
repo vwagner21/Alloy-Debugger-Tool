@@ -3,8 +3,7 @@ import time
 import shlex, subprocess
 import argparse
 
-
-def create_file(filepath, x):
+def create_file_flip(filepath, x):
     """
     Parse text at given filepath
 
@@ -32,7 +31,6 @@ def create_file(filepath, x):
         counter = 0
         line = file_object.readline()
         while line:
-            # print("Current line: "+line)
             if "fact" in line:
                 counter += 1
                 currentLine = line.split()
@@ -41,11 +39,7 @@ def create_file(filepath, x):
 
                 if currentLine[factInd+1] != '{':
                     unnamedFact = False
-                #
-                # print(currentLine[factInd+1])
-                # print(unnamedFact)
 
-                # print(f"FOUND FACT NUMBER {counter}")
                 if counter != x:
                     # Replace module
                     if unnamedFact:
@@ -60,6 +54,47 @@ def create_file(filepath, x):
             new.write(line)
             line = file_object.readline()
     return new_filepath
+
+
+def create_file_pair(filepath, x, y):
+
+    new_filepath = "factPairs_"+str(x)+str(y)+".als" # name this something based on the number x
+
+    # create a new file with a pair of facts
+    new = open(new_filepath, 'w')
+
+    # open the file and read through it line by line
+    with open(filepath, 'r') as file_object:
+        counter = 0
+        line = file_object.readline()
+        while line:
+            if "fact" in line:
+                counter += 1
+                currentLine = line.split()
+                unnamedFact = True
+                factInd = currentLine.index('fact')
+
+                if currentLine[factInd+1] != '{':
+                    unnamedFact = False
+
+                if counter != x or counter != y:
+                    # Replace module
+                    if unnamedFact:
+                        replaceStr = "pred PRED" + str(counter)
+                        new.write(line.replace("fact",replaceStr))
+                    else:
+                        new.write(line.replace("fact","pred"))
+                    line = file_object.readline()
+                    continue
+
+            # copy every line to new file
+            new.write(line)
+            line = file_object.readline()
+    return new_filepath
+
+
+
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Alloy Debugging Program')
@@ -79,11 +114,12 @@ if __name__ == '__main__':
     parser.add_argument('-o',
                         metavar='OutFile',
                         type=str,
-                        help='Where to output the  file',
+                        help='Where to output the file',
                         required=True)
 
-    # parser.add_argument('-a', action='store_true', help='Enable graph output')
     parser.add_argument('-g', action='store_true', help='Enable graph output')
+    parser.add_argument('-p', action='store_true', help='Enable fact pairing')
+
 
     args = parser.parse_args()
 
@@ -98,8 +134,8 @@ if __name__ == '__main__':
 
     # get filepath to open original uspec .als file
     filepath = args.i
-    test = args.t # FiveStages test instance, just using as placeholder.
-    fout = open(args.o, 'w') # TODO: this should be a path to an output file -- can be anything
+    test = args.t
+    fout = open(args.o, 'w') # this should be a path to an output file -- can be anything
 
     # open the file
     with open(filepath, 'r') as file_object:
@@ -107,42 +143,64 @@ if __name__ == '__main__':
         allFacts = re.findall('fact', file_object.read())
         n = len(allFacts)
 
-        # create a file for each instance
-        for x in range(n+1):
-            new_filepath = create_file(filepath, x)
-             # run each file as it is created
-            test_time_start = time.time()
-            p = subprocess.Popen(["java", "-cp", "org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
-                                  "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
-                                  "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
-            out, _  = p.communicate()
+        if args.p:
+            for x in range(n+1):
+                y = x+1
+                for y in range(n+1):
+                    new_filepath = create_file_pair(filepath, x, y)
+                    p = subprocess.Popen(["java", "-cp", "org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
+                                          "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
+                                          "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
+                    out, _  = p.communicate()
 
-            if args.g:
-                # Create graph for current file
-                filename = "graph_"+str(x)
-                fgraph = open(filename, 'w')
-                fgraph.write(out)
-                counter = 0
-                # with open(filename, "r") as f:
-                #     lines = f.readlines()
-                #     with open(filename, "w") as f:
-                #         for line in lines:
-                #             if counter < 4: # number of lines until INSTANCE starts
-                #                 counter += 1
-                #                 continue
-                #             f.write(line)
+                    if args.g:
+                        # Create graph for current file
+                        filename = "graph_"+str(x)
+                        fgraph = open(filename, 'w')
+                        fgraph.write(out)
+                        counter = 0
 
 
-            test_time_elapsed = time.time() - test_time_start
+                    test_time_elapsed = time.time() - test_time_start
 
-            # record results in output file
-            fout.write(test + ": ")
-            if "---INSTANCE---" in out:
-              fout.write(test + ", Observable, ")
+                    # record results in output file
+                    fout.write(test + ": ")
+                    if "---INSTANCE---" in out:
+                      fout.write(test + ", Observable, ")
 
-            else:
-              fout.write(test + ", Unobservable, ")
+                    else:
+                      fout.write(test + ", Unobservable, ")
 
-            fout.write(str(test_time_elapsed) + " sec\n")
+                    fout.write(str(test_time_elapsed) + " sec\n")
+        else:
+            # create a file for each instance
+            for x in range(n+1):
+                new_filepath = create_file_flip(filepath, x)
+                 # run each file as it is created
+                test_time_start = time.time()
+                p = subprocess.Popen(["java", "-cp", "org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
+                                      "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
+                                      "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
+                out, _  = p.communicate()
+
+                if args.g:
+                    # Create graph for current file
+                    filename = "graph_"+str(x)
+                    fgraph = open(filename, 'w')
+                    fgraph.write(out)
+                    counter = 0
+
+
+                test_time_elapsed = time.time() - test_time_start
+
+                # record results in output file
+                fout.write(test + ": ")
+                if "---INSTANCE---" in out:
+                  fout.write(test + ", Observable, ")
+
+                else:
+                  fout.write(test + ", Unobservable, ")
+
+                fout.write(str(test_time_elapsed) + " sec\n")
 
     fout.close()

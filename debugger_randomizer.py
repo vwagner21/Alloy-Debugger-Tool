@@ -70,8 +70,15 @@ if __name__ == '__main__':
     if sys.argv[1] is None:
         print("Usage: /path/to/als/file")
         exit()
+    if sys.argv[2] is None:
+        print("Usage: TO_REPLACE")
+        exit()
+    if sys.argv[3] is None:
+        print("Usage: REPLACEMENT")
+        exit()
+
 
 
     # get filepath to open original uspec .als file
     filepath = sys.argv[1]
-    randomize_Word(filepath, "or", "and")
+    randomize_Word(filepath, sys.argv[2], sys.arv[3])
