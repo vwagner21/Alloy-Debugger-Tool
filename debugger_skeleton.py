@@ -87,7 +87,6 @@ def create_file_pair(filepath, x, y):
         line = file_object.readline()
         while line:
             if "fact" in line:
-                counter += 1
                 # print(x)
                 # print(y)
                 # print(counter)
@@ -111,6 +110,7 @@ def create_file_pair(filepath, x, y):
             # copy every line to new file
             new.write(line)
             line = file_object.readline()
+            counter += 1
     return new_filepath
 
 
