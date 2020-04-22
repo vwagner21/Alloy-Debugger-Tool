@@ -6,7 +6,7 @@ import argparse
 def create_graph(alloyOut, filename):
     # Create graph for current file
     filename = "graph_"+filename
-    filename_GraphOut = "graphs/"+filename+"_GRAPH"
+    filename_GraphOut = filename+"_GRAPH"
     fgraph = open(filename, 'w')
     fgraph.write(alloyOut)
     p = subprocess.Popen(["python", "checkmate/util/release-generate-graphs.py",
