@@ -165,8 +165,8 @@ if __name__ == '__main__':
 
         if args.p:
             for x in range(n+1):
-                y = x+1
                 for y in range(n+1):
+                    y += 1
                     new_filepath = create_file_pair(filepath, x, y)
                     test_time_start = time.time()
                     p = subprocess.Popen(["java", "-cp", "org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
