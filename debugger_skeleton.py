@@ -3,6 +3,33 @@ import time
 import shlex, subprocess
 import argparse
 
+def create_graph(alloyOut, filename):
+    # Create graph for current file
+    filename = "graph_"+filename
+    filename_GraphOut = "graphs/"+filename+"_GRAPH"
+    fgraph = open(filename, 'w')
+    fgraph.write(alloyOut)
+    p = subprocess.Popen(["python", "checkmate/util/release-generate-graphs.py", # TODO: this should be a path to Alloy
+                          "-i", filename, "-c",
+                          "checkmate_simple","-o", filename_GraphOut], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
+    out, _  = p.communicate()
+
+
+def create_image():
+
+    p = subprocess.Popen(["python", "checkmate/util/release-generate-images.py", # TODO: this should be a path to Alloy
+                          "-i", "graphs/", "-o",
+                          "imgs/"], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
+    out, _  = p.communicate()
+    python checkmate/util/release-generate-images.py -i graphs/ -o imgs/
+
+
+
+
+
+ python checkmate/util/release-generate-graphs.py -i graph_13 -c checkmate_simple -o graph2
+
+
 def create_file_flip(filepath, x):
     """
     Parse text at given filepath
@@ -155,12 +182,8 @@ if __name__ == '__main__':
                     out, _  = p.communicate()
 
                     if args.g:
-                        # Create graph for current file
-                        filename = "graph_"+str(x)
-                        fgraph = open(filename, 'w')
-                        fgraph.write(out)
-                        counter = 0
-
+                        filename = str(x)+str(y)
+                        create_graph(out, filename)
 
                     test_time_elapsed = time.time() - test_time_start
 
@@ -203,5 +226,8 @@ if __name__ == '__main__':
                   fout.write(test + ", Unobservable, ")
 
                 fout.write(str(test_time_elapsed) + " sec\n")
+
+        if args.g:
+            create_image()
 
     fout.close()
