@@ -107,10 +107,11 @@ def create_file_pair(filepath, x, y):
                         new.write(line.replace("fact","pred"))
                     line = file_object.readline()
                     continue
+                counter += 1
             # copy every line to new file
             new.write(line)
+
             line = file_object.readline()
-            counter += 1
     return new_filepath
 
 
