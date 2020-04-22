@@ -12,7 +12,6 @@ def create_graph(alloyOut, filename):
     p = subprocess.Popen(["python", "checkmate/util/release-generate-graphs.py",
                           "-i", filename, "-c",
                           "checkmate_simple","-o", filename_GraphOut], stdout=subprocess.PIPE)
-    # out, _  = p.communicate()
 
 
 def create_image():
@@ -20,7 +19,6 @@ def create_image():
     p = subprocess.Popen(["python", "checkmate/util/release-generate-images.py",
                           "-i", "graphs/", "-o",
                           "imgs/"], stdout=subprocess.PIPE)
-    # out, _  = p.communicate()
 
 
 def create_file_flip(filepath, x):
@@ -90,6 +88,7 @@ def create_file_pair(filepath, x, y):
         while line:
             if "fact" in line:
                 counter += 1
+                print(f"X:{x}, Y:{y}, Counter:{counter}")
                 currentLine = line.split()
                 unnamedFact = True
                 factInd = currentLine.index('fact')
@@ -106,7 +105,6 @@ def create_file_pair(filepath, x, y):
                         new.write(line.replace("fact","pred"))
                     line = file_object.readline()
                     continue
-
             # copy every line to new file
             new.write(line)
             line = file_object.readline()
