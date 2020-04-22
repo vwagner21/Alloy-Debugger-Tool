@@ -148,6 +148,7 @@ if __name__ == '__main__':
                 y = x+1
                 for y in range(n+1):
                     new_filepath = create_file_pair(filepath, x, y)
+                    test_time_start = time.time()
                     p = subprocess.Popen(["java", "-cp", "org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
                                           "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
                                           "-f", new_filepath, test], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
