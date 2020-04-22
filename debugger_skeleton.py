@@ -88,7 +88,7 @@ def create_file_pair(filepath, x, y):
         while line:
             if "fact" in line:
                 counter += 1
-                print(f"X:{x}, Y:{y}, Counter:{counter}")
+                printf("X:% 2d Y:% 2d, Counter: % 2d"%(x,y,counter))
                 currentLine = line.split()
                 unnamedFact = True
                 factInd = currentLine.index('fact')
