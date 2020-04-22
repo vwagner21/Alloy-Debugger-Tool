@@ -88,9 +88,10 @@ def create_file_pair(filepath, x, y):
         while line:
             if "fact" in line:
                 counter += 1
-                print(x)
-                print(y)
-                print(counter)
+                # print(x)
+                # print(y)
+                # print(counter)
+
                 currentLine = line.split()
                 unnamedFact = True
                 factInd = currentLine.index('fact')
@@ -98,7 +99,7 @@ def create_file_pair(filepath, x, y):
                 if currentLine[factInd+1] != '{':
                     unnamedFact = False
 
-                if counter != x or counter != y:
+                if counter != x and counter != y:
                     # Replace module
                     if unnamedFact:
                         replaceStr = "pred PRED" + str(counter)
