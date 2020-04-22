@@ -21,13 +21,6 @@ def create_image():
                           "-i", "graphs/", "-o",
                           "imgs/"], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
     out, _  = p.communicate()
-    python checkmate/util/release-generate-images.py -i graphs/ -o imgs/
-
-
-
-
-
- python checkmate/util/release-generate-graphs.py -i graph_13 -c checkmate_simple -o graph2
 
 
 def create_file_flip(filepath, x):
