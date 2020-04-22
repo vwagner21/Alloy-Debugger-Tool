@@ -9,18 +9,18 @@ def create_graph(alloyOut, filename):
     filename_GraphOut = "graphs/"+filename+"_GRAPH"
     fgraph = open(filename, 'w')
     fgraph.write(alloyOut)
-    p = subprocess.Popen(["python", "checkmate/util/release-generate-graphs.py", # TODO: this should be a path to Alloy
+    p = subprocess.Popen(["python", "checkmate/util/release-generate-graphs.py",
                           "-i", filename, "-c",
-                          "checkmate_simple","-o", filename_GraphOut], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
-    out, _  = p.communicate()
+                          "checkmate_simple","-o", filename_GraphOut], stdout=subprocess.PIPE)
+    # out, _  = p.communicate()
 
 
 def create_image():
 
-    p = subprocess.Popen(["python", "checkmate/util/release-generate-images.py", # TODO: this should be a path to Alloy
+    p = subprocess.Popen(["python", "checkmate/util/release-generate-images.py",
                           "-i", "graphs/", "-o",
-                          "imgs/"], stdout=subprocess.PIPE) # TODO: probably will need to run this script from same folder as original .als so that it can locate checkmate.als
-    out, _  = p.communicate()
+                          "imgs/"], stdout=subprocess.PIPE)
+    # out, _  = p.communicate()
 
 
 def create_file_flip(filepath, x):
