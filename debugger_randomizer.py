@@ -81,4 +81,4 @@ if __name__ == '__main__':
 
     # get filepath to open original uspec .als file
     filepath = sys.argv[1]
-    randomize_Word(filepath, sys.argv[2], sys.arv[3])
+    randomize_Word(filepath, sys.argv[2], sys.argv[3])
