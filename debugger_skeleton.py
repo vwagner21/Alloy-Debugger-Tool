@@ -102,9 +102,11 @@ def create_file_pair(filepath, x, y):
                     # Replace module
                     if unnamedFact:
                         replaceStr = "pred PRED" + str(counter)
+                        counter += 1
                         new.write(line.replace("fact",replaceStr))
                     else:
                         new.write(line.replace("fact","pred"))
+                        counter += 1
                     line = file_object.readline()
                     continue
                 counter += 1
