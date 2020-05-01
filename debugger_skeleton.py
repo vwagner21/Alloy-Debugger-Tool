@@ -40,6 +40,7 @@ def create_file_flip(filepath, x):
     """
 
     new_filepath = "factToPred_"+str(x)+".als" # name this something based on the number x
+    factName = "" # Used for out.txt
 
     # create a new file with only one fact
     new = open(new_filepath, 'w')
@@ -57,11 +58,13 @@ def create_file_flip(filepath, x):
 
                 if currentLine[factInd+1] != '{':
                     unnamedFact = False
+                    factName = currentLine[factInd+1]
 
                 if counter == x:
                     # Replace module
                     if unnamedFact:
                         replaceStr = "pred PRED" + str(counter)
+                        factName = replaceStr
                         new.write(line.replace("fact",replaceStr))
                     else:
                         new.write(line.replace("fact","pred"))
@@ -71,7 +74,7 @@ def create_file_flip(filepath, x):
             # copy every line to new file
             new.write(line)
             line = file_object.readline()
-    return new_filepath
+    return new_filepath, factName
 
 
 def create_file_pair(filepath, x, y):
@@ -164,12 +167,13 @@ if __name__ == '__main__':
         # count number of instances of "fact"
         allFacts = re.findall('fact', file_object.read())
         n = len(allFacts)
+        factName = ""
 
         if args.p:
             for x in range(n+1):
                 for y in range(n+1):
                     y += 1
-                    new_filepath = create_file_pair(filepath, x, y)
+                    new_filepath, factName = create_file_pair(filepath, x, y)
                     test_time_start = time.time()
                     p = subprocess.Popen(["java", "-cp", "org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
                                           "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
@@ -185,16 +189,16 @@ if __name__ == '__main__':
                     # record results in output file
                     fout.write(test + ": ")
                     if "---INSTANCE---" in out:
-                      fout.write(test + ", Observable, ")
+                      fout.write(factName + ", Observable, ")
 
                     else:
-                      fout.write(test + ", Unobservable, ")
+                      fout.write(factName + ", Unobservable, ")
 
                     fout.write(str(test_time_elapsed) + " sec\n")
         else:
             # create a file for each instance
             for x in range(n+1):
-                new_filepath = create_file_flip(filepath, x)
+                new_filepath, factName = create_file_flip(filepath, x)
                  # run each file as it is created
                 test_time_start = time.time()
                 p = subprocess.Popen(["java", "-cp", "org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
@@ -215,10 +219,10 @@ if __name__ == '__main__':
                 # record results in output file
                 fout.write(test + ": ")
                 if "---INSTANCE---" in out:
-                  fout.write(test + ", Observable, ")
+                  fout.write(factName + ", Observable, ")
 
                 else:
-                  fout.write(test + ", Unobservable, ")
+                  fout.write(factName + ", Unobservable, ")
 
                 fout.write(str(test_time_elapsed) + " sec\n")
 
