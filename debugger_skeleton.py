@@ -68,7 +68,7 @@ def create_file_flip(filepath, x):
                     else:
                         new.write(line.replace("fact","pred"))
                         factName = currentLine[factInd+1]
-                        
+
                     line = file_object.readline()
                     continue
 
@@ -220,10 +220,10 @@ if __name__ == '__main__':
                 # record results in output file
                 fout.write(test + ": ")
                 if "---INSTANCE---" in out:
-                  fout.write(factName + ", Observable, ")
+                  fout.write("(fact->pred): "+ factName + ", Instance Observable[Look here for potential bug], ")
 
                 else:
-                  fout.write(factName + ", Unobservable, ")
+                  fout.write("(fact->pred): "+ factName + ", Instance Unobservable, ")
 
                 fout.write(str(test_time_elapsed) + " sec\n")
 
