@@ -58,8 +58,6 @@ def create_file_flip(filepath, x):
 
                 if currentLine[factInd+1] != '{':
                     unnamedFact = False
-                    factName = currentLine[factInd+1]
-                    print("Current fact name is:"+factName)
 
                 if counter == x:
                     # Replace module
@@ -69,6 +67,8 @@ def create_file_flip(filepath, x):
                         new.write(line.replace("fact",replaceStr))
                     else:
                         new.write(line.replace("fact","pred"))
+                        factName = currentLine[factInd+1]
+                        
                     line = file_object.readline()
                     continue
 
@@ -197,6 +197,9 @@ if __name__ == '__main__':
             # create a file for each instance
             for x in range(n+1):
                 new_filepath, factName = create_file_flip(filepath, x)
+                if x == 0:
+                    factName = "ORIGINAL FILE"
+
                  # run each file as it is created
                 test_time_start = time.time()
                 p = subprocess.Popen(["java", "-cp", "org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
@@ -226,9 +229,5 @@ if __name__ == '__main__':
 
         if args.g:
             create_image()
-
-        file_object.close()
-
-
 
     fout.close()
