@@ -58,7 +58,7 @@ def create_file_flip(filepath, x):
                 if currentLine[factInd+1] != '{':
                     unnamedFact = False
 
-                if counter != x:
+                if counter == x:
                     # Replace module
                     if unnamedFact:
                         replaceStr = "pred PRED" + str(counter)
@@ -117,9 +117,6 @@ def create_file_pair(filepath, x, y):
     return new_filepath
 
 
-
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Alloy Debugging Program')
 
@@ -140,6 +137,7 @@ if __name__ == '__main__':
                         type=str,
                         help='Where to output the file',
                         required=True)
+
 
     parser.add_argument('-g', action='store_true', help='Enable graph output')
     parser.add_argument('-p', action='store_true', help='Enable fact pairing')
