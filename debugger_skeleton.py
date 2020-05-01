@@ -59,6 +59,7 @@ def create_file_flip(filepath, x):
                 if currentLine[factInd+1] != '{':
                     unnamedFact = False
                     factName = currentLine[factInd+1]
+                    print("Current fact name is:"+factName)
 
                 if counter == x:
                     # Replace module
@@ -90,9 +91,6 @@ def create_file_pair(filepath, x, y):
         line = file_object.readline()
         while line:
             if "fact" in line:
-                # print(x)
-                # print(y)
-                # print(counter)
 
                 currentLine = line.split()
                 unnamedFact = True
@@ -173,7 +171,7 @@ if __name__ == '__main__':
             for x in range(n+1):
                 for y in range(n+1):
                     y += 1
-                    new_filepath, factName = create_file_pair(filepath, x, y)
+                    new_filepath = create_file_pair(filepath, x, y)
                     test_time_start = time.time()
                     p = subprocess.Popen(["java", "-cp", "org.alloytools.alloy-5.1.0/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar", # TODO: this should be a path to Alloy
                                           "edu.mit.csail.sdg.alloy4whole.MainClass", "-n", "1",
@@ -189,10 +187,10 @@ if __name__ == '__main__':
                     # record results in output file
                     fout.write(test + ": ")
                     if "---INSTANCE---" in out:
-                      fout.write(factName + ", Observable, ")
+                      fout.write(test + ", Observable, ")
 
                     else:
-                      fout.write(factName + ", Unobservable, ")
+                      fout.write(test + ", Unobservable, ")
 
                     fout.write(str(test_time_elapsed) + " sec\n")
         else:
@@ -228,5 +226,9 @@ if __name__ == '__main__':
 
         if args.g:
             create_image()
+
+        file_object.close()
+
+
 
     fout.close()
